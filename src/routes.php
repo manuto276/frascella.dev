@@ -6,13 +6,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 return function (App $app) {
     $app->get('/', function (Request $request, Response $response) {
-        $response->getBody()->write("Benvenuto!");
+        ob_start();
+        include __DIR__ . '/../views/home.php';
+        $html = ob_get_clean();
+        $response->getBody()->write($html);
         return $response;
-    });
-
-    $app->get('/users', function (Request $request, Response $response) {
-        $users = \App\Models\User::all();
-        $response->getBody()->write($users->toJson());
-        return $response->withHeader('Content-Type', 'application/json');
     });
 };
