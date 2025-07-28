@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+:root {
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 7.99rem;
+}
+
+h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5.65rem;
+}
+
+h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4.0rem;
+}
+
+h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.83rem;
+}
+
+h5 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.0rem;
+}
+
+h6 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.414rem;
+}
+
+p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+}
+
+small {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.707rem;
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    h1 {
+        font-size: 3.815rem;
+    }
+    h2 {
+        font-size: 3.052rem;
+    }
+    h3 {
+        font-size: 2.441rem;
+    }
+    h4 {
+        font-size: 1.953rem;
+    }
+    h5 {
+        font-size: 1.563rem;
+    }
+    h6 {
+        font-size: 1.25rem;
+    }
+    small {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2.98rem;
+    }
+    h2 {
+        font-size: 2.48rem;
+    }
+    h3 {
+        font-size: 2.07rem;
+    }
+    h4 {
+        font-size: 1.73rem;
+    }
+    h5 {
+        font-size: 1.44rem;
+    }
+    h6 {
+        font-size: 1.200rem;
+    }
+}
