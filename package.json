@@ -1,0 +1,24 @@
+{
+  "name": "frascella.dev",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "tailwind:build": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify",
+    "tailwind:watch": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manuto276/portfolio-v2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manuto276/portfolio-v2/issues"
+  },
+  "homepage": "https://github.com/manuto276/portfolio-v2#readme",
+  "description": "",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}
