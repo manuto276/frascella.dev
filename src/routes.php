@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 return function (App $app) {
     $app->get('/', function (Request $request, Response $response) {
         ob_start();
-        include __DIR__ . '/../views/home.php';
+        include __DIR__ . '/../views/pages/home.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
