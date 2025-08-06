@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Emanuele Frascella - Full Stack Developer</title>
 
     <link href="/css/tailwind.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
@@ -14,20 +14,49 @@
     <meta name="author" content="Emanuele Frascella">
 </head>
 <body class="tw-p-0 tw-m-0 tw-bg-black tw-text-[var(--text-color)] tw-font-sans">
-    <section class="tw-h-[100vh]">
+    <header class="tw-fixed tw-top-0 tw-left-0 tw-right-0 tw-z-10 tw-px-8 tw-py-4 tw-h-[46px]">
+        <div class="date-time paragraph tw-absolute tw-uppercase tw-top-1/2 tw-left-8 tw-transform tw--translate-y-1/2">
+        <?php
+            echo date('DH:i:s');
+        ?>
+        </div>
+        <div class="copyright paragraph tw-absolute tw-top-1/2 tw-left-1/2 tw-transform tw--translate-x-1/2 tw--translate-y-1/2 tw-text-center tw-uppercase">
+            &copy; 2025 Emanuele Frascella
+        </div>
+        <div class="lan paragraph tw-absolute tw-top-1/2 tw-right-8 tw-transform tw--translate-y-1/2">
+            LAN EN >
+        </div>
+    </header>
+
+    <section class="tw-h-[100vh] section-1">
         <!-- Fixed Background Image -->
         <img
-            src="/images/hero-graffiti.png"
+            src="/images/hero-background.png"
             alt=""
-            class="tw-fixed tw-inset-0 tw-w-[100vw] tw-h-[100vh] tw-z-[-1]
+            class="tw-fixed tw-inset-0 tw-w-[100vw] tw-h-[100vh] tw-z-[-3]
                 tw-cursor-default tw-pointer-events-none
-                hero-image"
+                hero-background"
         >
 
-        <!-- Masked Title -->
-        <div class="hero-title-mask tw-fixed tw-inset-0 tw-w-[100vw] tw-h-[100vh] tw-z-[-1]
-                tw-cursor-default tw-pointer-events-none tw-flex tw-items-center tw-justify-center">
-            <h1 class="tw-text-center">Frascella</h1>
+        <!-- Hero Title -->
+        <div class="tw-fixed tw-inset-0 tw-w-[100vw] tw-h-[100vh]
+                tw-cursor-default tw-z-[-2]">
+            <div class="hero-title-container tw-text-center">
+                <h1 class="tw-text-center headline1">Frascella</h1>
+            </div>
+        </div>
+
+        <!-- Fixed Hero Image -->
+        <div class="tw-fixed tw-inset-0 tw-w-[100vw] tw-h-[100vh]
+                tw-cursor-default tw-pointer-events-none
+                hero-image-container">
+            <img
+                src="/images/hero-graffiti.png"
+                alt=""
+                class="tw-w-[100vw] tw-h-[100vh]
+                    tw-cursor-default tw-pointer-events-none
+                    hero-image"
+            >
         </div>
 
         <!-- Scroll Indicator -->
@@ -42,7 +71,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/split-type"></script>
 
-    <!-- Custom Script -->
-    <script src="/js/home.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/pages/home.js"></script>
 </body>
 </html>
