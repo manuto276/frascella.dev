@@ -1,91 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-
 :root {
     font-size: 16px;
-    line-height: 1.25;
+    line-height: 1.5;
+
+    --background-color: #3A3042;
+    --text-color: #FFFFFF;
+    --primary-color: #FF784F;
+    --secondary-color: #DB9D47;
+    --accent-color: #FFE19C;
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.04em;
+}
+
+.headline1 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 7.99rem;
+    font-size: 17.942rem;
+    line-height: 1.0;
 }
 
-h2 {
+.headline2 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 5.65rem;
+    font-size: 11.089rem;
+    line-height: 1.0;
 }
 
-h3 {
+.headline3 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 4.0rem;
+    font-size: 6.854rem;
+    line-height: 1.0;
 }
 
-h4 {
+.headline4 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.83rem;
+    font-size: 4.236rem;
+    line-height: 1.0;
 }
 
-h5 {
+.headline5 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.0rem;
+    font-size: 2.618rem;
+    line-height: 1.0;
 }
 
-h6 {
+.headline6 {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.414rem;
+    font-size: 1.618rem;
+    line-height: 1.0;
 }
 
-p {
+.paragraph {
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
 }
 
-small {
+.small {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.707rem;
 }
 
-@media (min-width: 601px) and (max-width: 1024px) {
-    h1 {
-        font-size: 3.815rem;
+@media (max-width: 1024px) {
+    .headline1 {
+        font-size: 11.391rem;
     }
-    h2 {
-        font-size: 3.052rem;
+
+    .headline2 {
+        font-size: 7.594rem;
     }
-    h3 {
-        font-size: 2.441rem;
+
+    .headline3 {
+        font-size: 5.063rem;
     }
-    h4 {
-        font-size: 1.953rem;
+
+    .headline4 {
+        font-size: 3.375rem;
     }
-    h5 {
-        font-size: 1.563rem;
+
+    .headline5 {
+        font-size: 2.25rem;
     }
-    h6 {
-        font-size: 1.25rem;
+
+    .headline6 {
+        font-size: 1.5rem;
     }
-    small {
-        font-size: 0.8rem;
+
+    .small {
+        font-size: 0.75rem;
     }
 }
 
 @media (max-width: 600px) {
-    h1 {
-        font-size: 2.98rem;
+    .headline1 {
+        font-size: 5.61rem;
     }
-    h2 {
-        font-size: 2.48rem;
+    .headline2 {
+        font-size: 4.209rem;
     }
-    h3 {
-        font-size: 2.07rem;
+    .headline3 {
+        font-size: 3.157rem;
     }
-    h4 {
-        font-size: 1.73rem;
+    .headline4 {
+        font-size: 2.369rem;
     }
-    h5 {
-        font-size: 1.44rem;
+    .headline5 {
+        font-size: 1.777rem;
     }
-    h6 {
-        font-size: 1.200rem;
+    .headline6 {
+        font-size: 1.333rem;
+    }
+    .small {
+        font-size: 0.707rem;
+    }
+}
+
+@keyframes scroll-indicator-pulse {
+    0% {
+        transform: scaleY(0);
+        transform-origin: top;
+    }
+    25% {
+        transform: scaleY(1);
+        transform-origin: top;
+    }
+    26% {
+        transform-origin: bottom;
+    }
+    50% {
+        transform: scaleY(0);
+        transform-origin: bottom;
+    }
+    100% {
+        transform: scaleY(0);
+        transform-origin: bottom;
     }
 }
