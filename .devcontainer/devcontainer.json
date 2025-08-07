@@ -1,0 +1,23 @@
+{
+    "dockerFile": "Dockerfile",
+    "context": "..",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "editor.tabSize": 4,
+                "editor.insertSpaces": true,
+                "files.autoSave": "onWindowChange"
+            },
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "felixfbecker.php-intellisense",
+                "xdebug.php-debug"
+            ]
+        }
+    },
+    "forwardPorts": [8080],
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/var/www/html,type=bind,consistency=cached"
+    ],
+    "postStartCommand": "php-fpm & nginx -g 'daemon off;'"
+}

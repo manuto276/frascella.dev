@@ -2,7 +2,7 @@
     "name": "emanuele-frascella/frascella.dev",
     "autoload": {
         "psr-4": {
-            "EmanueleFrascella\\FrascellaDev\\": "src/"
+            "App\\": "app/"
         }
     },
     "authors": [

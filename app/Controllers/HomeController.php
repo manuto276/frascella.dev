@@ -1,15 +1,18 @@
 <?php
 
-use Slim\App;
+namespace App\Controllers;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-return function (App $app) {
-    $app->get('/', function (Request $request, Response $response) {
+class HomeController
+{
+    public function index(Request $request, Response $response): Response
+    {
         ob_start();
-        include __DIR__ . '/../views/pages/home.php';
+        include __DIR__ . '/../../views/pages/home.php';
         $html = ob_get_clean();
         $response->getBody()->write($html);
         return $response;
-    });
-};
+    }
+}
