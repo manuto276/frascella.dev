@@ -1,50 +1,70 @@
-// Initialize the date and time display
-initDateTime();
+// js/home.js
+(() => {
+  const on = (t, s, h, opts) => t.addEventListener(s, h, opts || { passive: true });
 
-// Fit text in the hero section
-fitText();
+  /* ---------- Live Clock ---------- */
+  const initLiveClock = () => {
+    const el = document.querySelector('.date-time');
+    if (!el) return; // graceful: non bloccare se manca
 
-window.addEventListener('DOMContentLoaded', () => {
-  // Initialize GSAP animations
-  gsap.registerPlugin(ScrollTrigger);
-});
+    const tick = () => {
+      const now = new Date();
+      const day = now.toLocaleDateString('en-US', { weekday: 'short' }); // e.g. Mon
+      const time = now.toLocaleTimeString('it-IT', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      el.textContent = `${day} ${time}`; // "Mon 18:23:01"
+    };
 
-window.addEventListener('resize', () => {
-  // Refit text on window resize
-  fitText();
-});
+    tick(); // render immediato
+    const id = setInterval(tick, 1000);
 
-function initDateTime() {
-  const dateTimeElement = document.querySelector('.date-time');
-
-  if (!dateTimeElement) {
-    throw new Error('Date-time element not found');
-  }
-
-  // Add an interval to update the date and time every second
-  // Date must be in the format "DHH:MM:SS"
-  setInterval(() => {
-    const now = new Date();
-    const formattedDate = now.toLocaleDateString('en-US', {
-      weekday: 'short'
+    // opzionale: pausa quando tab hidden
+    on(document, 'visibilitychange', () => {
+      if (document.hidden) { clearInterval(id); }
     });
-    const formattedTime = now.toLocaleTimeString('it-IT', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+  };
+
+  /* ---------- Fitty (hero title) ---------- */
+  const initHeroFit = () => {
+    const el = document.getElementById('hero-title');
+    if (!el) return;
+
+    // evita doppie inizializzazioni
+    if (el._fitted) return;
+
+    if (typeof window.fitty === 'function') {
+      window.fitty(el, { minSize: 20, maxSize: 640, multiLine: false });
+      el._fitted = true;
+    }
+  };
+
+  /* ---------- Resize (debounced) ---------- */
+  const initResizeHandler = () => {
+    let raf = null;
+    on(window, 'resize', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        initHeroFit();
+      });
     });
+  };
 
-    dateTimeElement.textContent = `${formattedDate}${formattedTime}`;
-  }, 1000);
-}
+  /* ---------- GSAP plugin (safe) ---------- */
+  const registerGsapPlugins = () => {
+    if (window.gsap && window.ScrollTrigger && typeof gsap.registerPlugin === 'function') {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+  };
 
-function fitText() {
-  const heroTitleEl = document.getElementById('hero-title');
-  if (!heroTitleEl) {
-    throw new Error('Hero title element not found');
-  }
-  fitText(heroTitleEl, {
-    minFontSize: 20,
-    maxFontSize: 640,
+  /* ---------- DOM Ready ---------- */
+  on(window, 'DOMContentLoaded', () => {
+    registerGsapPlugins();
+    initLiveClock();
+    initHeroFit();
+    initResizeHandler();
   });
-}
+})();

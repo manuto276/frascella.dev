@@ -25,7 +25,7 @@ return function (App $app) {
 
     // Middleware di base applicati alle rotte "web" (pubbliche)
     $app->group('', function (Group $group) use ($c) {
-        $group->get('/', [HomeController::class, 'index'])->setName('home');
+        $group->get('/', [HomeController::class, 'index'])->setName('index');
 
         // Setup admin
         $group->get('/setup', [SetupController::class, 'form'])->setName('setup.form');
