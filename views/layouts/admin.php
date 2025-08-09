@@ -1,16 +1,19 @@
-<?php /** @var string $content */ ?>
 <?php
-  // Active route helper
-  $current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
-  // Define nav items once
-  $navItems = [
-      [ 'href' => '/admin/dashboard', 'icon' => 'bi-grid',     'label' => 'Dashboard', 'active' => $current === '/admin/dashboard' ],
-      [ 'href' => '/admin/contacts',  'icon' => 'bi-envelope', 'label' => 'Contacts',   'active' => $current === '/admin/contacts' ],
-  ];
+/** @var string $content */ ?>
+<?php
+// Active route helper
+$current = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+
+// Define nav items once
+$navItems = [
+  ['href' => '/admin/dashboard', 'icon' => 'bi-grid',     'label' => 'Dashboard', 'active' => $current === '/admin/dashboard'],
+  ['href' => '/admin/contacts',  'icon' => 'bi-envelope', 'label' => 'Contacts',   'active' => $current === '/admin/contacts'],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title><?= htmlspecialchars($pageTitle ?? 'Admin') ?></title>
@@ -21,24 +24,76 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    .admin-shell { min-height: 100vh; }
-    .sidebar {
-      width: 260px; flex: 0 0 260px;
-      background: #0f172a; /* slate-900 */
+    .admin-shell {
+      min-height: 100vh;
     }
-    .sidebar a { color: rgba(255,255,255,0.85); text-decoration: none; }
-    .sidebar a.active, .sidebar a:hover { color: #fff; }
-    .brand-gradient { background: linear-gradient(90deg,#4f46e5,#7c3aed); }
+
+    .sidebar {
+      width: 260px;
+      flex: 0 0 260px;
+      background: #0f172a;
+      /* slate-900 */
+    }
+
+    .sidebar a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+    }
+
+    .sidebar a.active,
+    .sidebar a:hover {
+      color: #fff;
+    }
+
+    .brand-gradient {
+      background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    }
 
     /* On large screens keep sidebar visible; on smaller, hide it (use offcanvas) */
     @media (max-width: 991.98px) {
-      .sidebar-desktop { display: none !important; }
+      .sidebar-desktop {
+        display: none !important;
+      }
     }
+
     @media (min-width: 992px) {
-      .drawer-toggle { display: none !important; }
+      .drawer-toggle {
+        display: none !important;
+      }
+    }
+
+    /* Offcanvas: sfondo e colori coerenti */
+    .offcanvas {
+      --bs-offcanvas-bg: #0f172a;
+    }
+
+    .offcanvas .offcanvas-body {
+      color: rgba(255, 255, 255, .85);
+    }
+
+    /* Link nel drawer come nav-link full-width */
+    .offcanvas .nav-link {
+      color: rgba(255, 255, 255, .85);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem .75rem;
+      border-radius: .375rem;
+    }
+
+    .offcanvas .nav-link:hover,
+    .offcanvas .nav-link:focus {
+      color: #fff;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .offcanvas .nav-link.active {
+      color: #fff;
+      background: rgba(13, 110, 253, .25);
     }
   </style>
 </head>
+
 <body class="bg-light">
   <div class="admin-shell d-flex">
 
@@ -51,7 +106,7 @@
       <nav class="p-3 d-flex flex-column gap-1" aria-label="Primary">
         <?php foreach ($navItems as $item): ?>
           <a href="<?= htmlspecialchars($item['href']) ?>"
-             class="px-3 py-2 rounded d-flex align-items-center gap-2 <?= $item['active'] ? 'active bg-primary' : 'text-white-50' ?>">
+            class="px-3 py-2 rounded d-flex align-items-center gap-2 <?= $item['active'] ? 'active bg-primary' : 'text-white-50' ?>">
             <i class="bi <?= htmlspecialchars($item['icon']) ?>"></i>
             <span><?= htmlspecialchars($item['label']) ?></span>
           </a>
@@ -73,8 +128,8 @@
           <div class="d-flex align-items-center gap-3">
             <!-- Drawer toggle (mobile) -->
             <button class="btn btn-outline-secondary drawer-toggle" type="button"
-                    data-bs-toggle="offcanvas" data-bs-target="#adminDrawer" aria-controls="adminDrawer"
-                    aria-label="Open navigation">
+              data-bs-toggle="offcanvas" data-bs-target="#adminDrawer" aria-controls="adminDrawer"
+              aria-label="Open navigation">
               <i class="bi bi-list"></i>
             </button>
             <h1 class="h5 mb-0"><?= htmlspecialchars($pageTitle ?? '') ?></h1>
@@ -102,8 +157,8 @@
       <nav class="p-3 d-flex flex-column gap-1" aria-label="Primary mobile">
         <?php foreach ($navItems as $item): ?>
           <a href="<?= htmlspecialchars($item['href']) ?>"
-             class="px-3 py-2 rounded d-flex align-items-center gap-2 <?= $item['active'] ? 'active bg-primary' : 'text-white-50' ?>"
-             data-bs-dismiss="offcanvas" aria-label="Navigate">
+            class="nav-link <?= $item['active'] ? 'active' : '' ?>"
+            data-nav="true" aria-label="Navigate">
             <i class="bi <?= htmlspecialchars($item['icon']) ?>"></i>
             <span><?= htmlspecialchars($item['label']) ?></span>
           </a>
@@ -120,5 +175,27 @@
   <!-- Bootstrap JS + Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <script>
+    (() => {
+      const drawerEl = document.getElementById('adminDrawer');
+      if (!drawerEl) return;
+
+      const oc = bootstrap.Offcanvas.getOrCreateInstance(drawerEl);
+      document.querySelectorAll('#adminDrawer a[data-nav="true"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const href = a.getAttribute('href');
+          // chiudi il drawer prima di navigare
+          oc.hide();
+          // attendi la fine dell’animazione per evitare click “persi” su mobile
+          setTimeout(() => {
+            window.location.assign(href);
+          }, 200);
+        });
+      });
+    })();
+  </script>
 </body>
+
 </html>
