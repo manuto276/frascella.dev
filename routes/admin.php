@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AdminApi\ContactsApiController;
+use App\Controllers\AdminApi\TokenApiController;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy as Group;
 use App\Controllers\AdminDashboardController;
@@ -16,6 +17,7 @@ return function (App $app) {
     $app->get('/admin/login', [AuthController::class, 'loginForm'])->setName('admin.login.form');
     $app->post('/admin/login', [AuthController::class, 'login'])->setName('admin.login');
     $app->get('/admin/logout', [AuthController::class, 'logout'])->setName('admin.logout');
+    $app->get('/admin/refresh', [TokenApiController::class, 'refresh'])->setName('admin.refresh');
 
     $app->group('/admin', function (Group $group) {
         $group->get('', function ($request, $response) {

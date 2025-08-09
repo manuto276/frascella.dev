@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Database\Connection;
 use App\Services\JwtService;
+use App\Services\RefreshTokenService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -12,7 +13,9 @@ class AuthController
     public function __construct(
         private Connection $connection,
         private JwtService $jwt,
-        private array $jwtConfig // settings['jwt']
+        private RefreshTokenService $refreshTokenService,
+        private array $jwtConfig,
+        private array $refreshConfig
     ) {}
 
     public function loginForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -44,6 +47,12 @@ class AuthController
 
         $token = $this->jwt->issueToken((int)$admin['id'], $admin['email']);
 
+        $meta = $this->refreshTokenService->issue(
+            (int)$admin['id'],
+            $request->getHeaderLine('User-Agent') ?? null,
+            $request->getAttribute('ip_address') ?? null
+        );
+
         // HttpOnly cookie for browser access
         $cookieName = $this->jwtConfig['cookie'] ?? 'admin_token';
         $ttl     = (int)$this->jwtConfig['ttl'];
@@ -58,22 +67,43 @@ class AuthController
             $secure ? '; Secure' : ''
         );
 
+        $refreshCookieName = $this->refreshConfig['cookie'] ?? 'admin_refresh';
+        $refreshExpires = gmdate('D, d M Y H:i:s T', time() + $this->refreshConfig['ttl']);
+        $refreshCookie = sprintf(
+            '%s=%s; Expires=%s; Path=%s; HttpOnly; SameSite=%s%s',
+            $refreshCookieName,
+            rawurlencode($meta['token']),
+            $refreshExpires,
+            $this->refreshConfig['path'],
+            $this->refreshConfig['sameSite'],
+            !empty($this->refreshConfig['domain']) ? '; Domain=' . $this->refreshConfig['domain'] : ''
+        );
+
         $response = $response->withAddedHeader('Set-Cookie', $cookie);
+        $response = $response->withAddedHeader('Set-Cookie', $refreshCookie);
         return $response->withHeader('Location', '/admin/dashboard')->withStatus(302);
     }
 
     public function logout(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $cookieName = $this->jwtConfig['cookie'] ?? 'admin_token';
+        $refreshCookieName = $this->refreshConfig['cookie'] ?? 'admin_refresh';
         $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-        setcookie($cookieName, '', [
-            'expires'  => time() - 3600,
-            'path'     => '/',
-            'domain'   => '',
-            'secure'   => $secure,
-            'httponly' => true,
-            'samesite' => 'Lax',
-        ]);
+
+        $admin = $request->getAttribute('admin');
+
+        if ($admin && $admin['id']) {
+            $this->refreshTokenService->revokeAllForAdmin((int)$admin['id'], 'logout');
+        }
+
+        foreach ([$cookieName, $refreshCookieName] as $name) {
+            $cookie = sprintf(
+                '%s=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; HttpOnly%s',
+                $name,
+                $secure ? '; Secure' : ''
+            );
+            $response = $response->withAddedHeader('Set-Cookie', $cookie);
+        }
 
         return $response->withHeader('Location', '/admin/login')->withStatus(302);
     }

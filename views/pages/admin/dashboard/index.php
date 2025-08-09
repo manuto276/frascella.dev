@@ -67,27 +67,39 @@ ob_start();
   </div>
 </div>
 
-<script>
+<script type="module">
+  import http from '/js/axiosClient.js'; // axios preconfigurato: withCredentials + interceptor 401→refresh→retry
+
   (() => {
     const qs = (s, el = document) => el.querySelector(s);
 
+    // ---- API layer (Axios) ---------------------------------------------------
     const api = {
       summary: (from, to) =>
-        fetch(`/admin/api/traffic/summary?${new URLSearchParams({from:from||'',to:to||''})}`, {
-          credentials: 'same-origin',
-          headers: {
-            'Accept': 'application/json'
+        http.get('/admin/api/traffic/summary', {
+          params: {
+            from: from || '',
+            to: to || ''
           }
-        }).then(r => (r.status === 401 ? Promise.reject('unauthorized') : r.json())),
+        }).then(r => r.data),
+
       timeseries: (from, to) =>
-        fetch(`/admin/api/traffic/timeseries?${new URLSearchParams({from:from||'',to:to||''})}`, {
-          credentials: 'same-origin',
-          headers: {
-            'Accept': 'application/json'
+        http.get('/admin/api/traffic/timeseries', {
+          params: {
+            from: from || '',
+            to: to || ''
           }
-        }).then(r => (r.status === 401 ? Promise.reject('unauthorized') : r.json())),
+        }).then(r => r.data),
+
+      latestContacts: (limit = 5) =>
+        http.get('/admin/api/contacts/latest', {
+          params: {
+            limit
+          }
+        }).then(r => r.data),
     };
 
+    // ---- Chart.js ------------------------------------------------------------
     const lineCtx = document.getElementById('trafficLine').getContext('2d');
     let lineChart;
 
@@ -131,23 +143,22 @@ ob_start();
       });
     }
 
-    function esc(s){return s==null?'':String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c]));}
+    function esc(s) {
+      return s == null ? '' : String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      } [c]));
+    }
 
     async function loadLatestContacts(limit = 5) {
       const el = document.getElementById('latestContacts');
       if (!el) return;
 
       try {
-        const r = await fetch(`/admin/api/contacts/latest?limit=${encodeURIComponent(limit)}`, {
-          credentials: 'same-origin',
-          headers: { 'Accept': 'application/json' }
-        });
-        if (r.status === 401) {
-          // Segui la stessa logica del resto della dashboard
-          window.location.href = '/admin/login';
-          return;
-        }
-        const data = await r.json();
+        const data = await api.latestContacts(limit);
 
         if (!Array.isArray(data) || data.length === 0) {
           el.innerHTML = '<li class="text-muted">No messages yet.</li>';
@@ -163,13 +174,18 @@ ob_start();
             <span class="text-muted">${esc(m.created_at)}</span>
           </li>
         `).join('');
-      } catch (e) {
-        // in caso di errore silenzioso non blocchiamo la dashboard
-        console.error('Failed to load latest contacts:', e);
+      } catch (err) {
+        // Se dopo il retry rimane 401, rimanda al login
+        if (err?.response?.status === 401) {
+          window.location.href = '/admin/login';
+          return;
+        }
+        console.error('Failed to load latest contacts:', err);
       }
     }
 
     async function load(from, to) {
+      try {
         const [sum, ts] = await Promise.all([api.summary(from, to), api.timeseries(from, to)]);
 
         // KPIs
@@ -185,6 +201,13 @@ ob_start();
 
         // Latest contacts
         loadLatestContacts(5);
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          window.location.href = '/admin/login';
+          return;
+        }
+        console.error('Dashboard load failed:', err);
+      }
     }
 
     // Date range form
@@ -199,6 +222,7 @@ ob_start();
     load();
   })();
 </script>
+
 <?php
 $content = ob_get_clean();
 include __DIR__ . '/../../../layouts/admin.php';

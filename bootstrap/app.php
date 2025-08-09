@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use DI\Container;
@@ -30,7 +31,9 @@ use App\Controllers\CsrfController;
 // Controllers (API)
 use App\Controllers\AdminApi\TrafficApiController;
 use App\Controllers\AdminApi\ContactsApiController;
+use App\Controllers\AdminApi\TokenApiController;
 use App\Controllers\PublicApi\ContactApiController;
+use App\Services\RefreshTokenService;
 
 $containerBuilder = new ContainerBuilder();
 
@@ -55,8 +58,9 @@ $containerBuilder->addDefinitions([
 $containerBuilder->addDefinitions([
     StartSession::class   => fn($c) => new StartSession(),
     JwtService::class     => fn($c) => new JwtService($c->get('settings')['jwt']),
+    RefreshTokenService::class => fn($c) => new RefreshTokenService($c->get(Connection::class), $c->get('settings')['refresh']),
     JwtAuth::class        => fn($c) => new JwtAuth($c->get(JwtService::class), $c->get('settings')['jwt']),
-    AdminSetupCheck::class=> fn($c) => new AdminSetupCheck($c->get(Connection::class)),
+    AdminSetupCheck::class => fn($c) => new AdminSetupCheck($c->get(Connection::class)),
     TrafficLogger::class  => fn($c) => new TrafficLogger($c->get(Connection::class)),
 ]);
 
@@ -74,7 +78,8 @@ $containerBuilder->addDefinitions([
 
 // Controllers (web)
 $containerBuilder->addDefinitions([
-    AuthController::class            => fn($c) => new AuthController($c->get(Connection::class), $c->get(JwtService::class), $c->get('settings')['jwt']),
+    AuthController::class            => fn($c) => new AuthController($c->get(Connection::class), $c->get(JwtService::class), $c->get(RefreshTokenService::class), $c->get('settings')['jwt'], $c->get('settings')['refresh']),
+    TokenApiController::class      => fn($c) => new TokenApiController($c->get(Connection::class), $c->get(RefreshTokenService::class), $c->get(JwtService::class), $c->get('settings')['jwt'], $c->get('settings')['refresh']),
     AdminDashboardController::class  => fn($c) => new AdminDashboardController(),
     AdminContactsController::class   => fn($c) => new AdminContactsController(),
     CsrfController::class            => fn($c) => new CsrfController(),

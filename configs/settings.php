@@ -34,6 +34,14 @@ return function (Container $container) {
             'cookie'   => $_ENV['JWT_COOKIE']   ?? 'admin_token', // cookie name
         ],
 
+        'refresh' => [
+            'ttl'     => 60*60*24*30,     // 30 giorni
+            'cookie'  => 'admin_refresh',
+            'domain'  => null,            // opzionale
+            'path'    => '/admin',
+            'sameSite'=> 'Strict',        // Strict o Lax (preferisci Strict)
+        ],
+
         'mail' => [
             'driver'   => $_ENV['MAIL_DRIVER']   ?? 'smtp',
             'host'     => $_ENV['MAIL_HOST']     ?? '127.0.0.1',

@@ -23,14 +23,14 @@ return function (App $app) {
         $group->post('/contact', [ContactApiController::class, 'submit'])->setName('api.contact.submit');
     })->add(new CsrfGuard('X-CSRF-Token'));
 
+    // Setup admin
+    $app->get('/setup', [SetupController::class, 'form'])->setName('setup.form');
+    $app->post('/setup', [SetupController::class, 'submit'])->setName('setup.submit');
+    $app->get('/setup/complete', [SetupController::class, 'complete'])->setName('setup.complete');
+
     // Middleware di base applicati alle rotte "web" (pubbliche)
     $app->group('', function (Group $group) use ($c) {
         $group->get('/', [HomeController::class, 'index'])->setName('index');
-
-        // Setup admin
-        $group->get('/setup', [SetupController::class, 'form'])->setName('setup.form');
-        $group->post('/setup', [SetupController::class, 'submit'])->setName('setup.submit');
-        $group->get('/setup/complete', [SetupController::class, 'complete'])->setName('setup.complete');
     })
     ->add(new AdminSetupCheck($c->get(\App\Database\Connection::class)))
     ->add(new TrafficLogger($c->get(\App\Database\Connection::class)));

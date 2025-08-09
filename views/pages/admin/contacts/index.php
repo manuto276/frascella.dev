@@ -27,70 +27,96 @@
   </div>
 </div>
 
-<script>
-(() => {
-  const q = s => document.querySelector(s);
-  const rows = q('#rows'), pager = q('#pager');
+<script type="module">
+  import http from '/js/axiosClient.js'; // Axios preconfigurato: withCredentials + 401→refresh→retry
 
-  function esc(s){return s==null?'':String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c]));}
+  (() => {
+    const q = s => document.querySelector(s);
+    const rows = q('#rows'), pager = q('#pager');
 
-  async function fetchList(page=1){
-    const params = new URLSearchParams({
-      status: q('#status').value || '',
-      from: q('#from').value || '',
-      to: q('#to').value || '',
-      page, per: 20
-    });
-    const r = await fetch(`/admin/api/contacts?${params}`, {credentials:'same-origin', headers:{'Accept':'application/json'}});
-    if (r.status===401) { location.href='/admin/login'; return; }
-    return r.json();
-  }
+    function esc(s){return s==null?'':String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c]));}
 
-  function render(list){
-    rows.innerHTML = '';
-    list.data.forEach(m => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${esc(m.created_at)}</td>
-        <td>${esc(m.name)}</td>
-        <td><a href="mailto:${esc(m.email)}">${esc(m.email)}</a></td>
-        <td>${esc(m.subject||'-')}</td>
-        <td>
-          <select class="form-select form-select-sm status" data-id="${m.id}">
-            ${['new','read','replied','archived'].map(s=>`<option value="${s}" ${s===m.status?'selected':''}>${s}</option>`).join('')}
-          </select>
-        </td>
-        <td><button class="btn btn-sm btn-outline-secondary view" data-id="${m.id}">View</button></td>`;
-      rows.appendChild(tr);
-    });
+    // ---- API layer (Axios) ---------------------------------------------------
+    const api = {
+      list: (page = 1) => {
+        const params = {
+          status: q('#status').value || '',
+          from:   q('#from').value   || '',
+          to:     q('#to').value     || '',
+          page,
+          per: 20
+        };
+        return http.get('/admin/api/contacts', { params }).then(r => r.data);
+      },
+      setStatus: (id, status) => {
+        // server si aspetta x-www-form-urlencoded
+        const body = new URLSearchParams({ status });
+        return http.post(`/admin/api/contacts/${id}/status`, body, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+      }
+    };
 
-    // pager
-    const pages = Math.max(1, Math.ceil(list.total / list.per));
-    pager.innerHTML = '';
-    for (let p=1; p<=pages; p++){
-      const li = document.createElement('li');
-      li.className = 'page-item'+(p===list.page?' active':'');
-      li.innerHTML = `<a class="page-link" href="#">${p}</a>`;
-      li.addEventListener('click', e => { e.preventDefault(); load(p); });
-      pager.appendChild(li);
-    }
+    function render(list){
+      rows.innerHTML = '';
+      list.data.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${esc(m.created_at)}</td>
+          <td>${esc(m.name)}</td>
+          <td><a href="mailto:${esc(m.email)}">${esc(m.email)}</a></td>
+          <td>${esc(m.subject||'-')}</td>
+          <td>
+            <select class="form-select form-select-sm status" data-id="${m.id}">
+              ${['new','read','replied','archived'].map(s=>`<option value="${s}" ${s===m.status?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </td>
+          <td><a class="btn btn-sm btn-outline-secondary" href="/admin/contacts/${m.id}">View</a></td>`;
+        rows.appendChild(tr);
+      });
 
-    rows.querySelectorAll('.status').forEach(sel=>{
-      sel.addEventListener('change', async e=>{
-        const id = sel.dataset.id;
-        await fetch(`/admin/api/contacts/${id}/status`, {
-          method:'POST', credentials:'same-origin',
-          headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
-          body:new URLSearchParams({status: sel.value}).toString()
+      // pager
+      const pages = Math.max(1, Math.ceil(list.total / list.per));
+      pager.innerHTML = '';
+      for (let p=1; p<=pages; p++){
+        const li = document.createElement('li');
+        li.className = 'page-item'+(p===list.page?' active':'');
+        li.innerHTML = `<a class="page-link" href="#">${p}</a>`;
+        li.addEventListener('click', e => { e.preventDefault(); load(p); });
+        pager.appendChild(li);
+      }
+
+      rows.querySelectorAll('.status').forEach(sel=>{
+        sel.addEventListener('change', async () => {
+          try {
+            await api.setStatus(sel.dataset.id, sel.value);
+          } catch (err) {
+            if (err?.response?.status === 401) {
+              window.location.href = '/admin/login';
+            } else {
+              console.error('Failed to update status:', err);
+            }
+          }
         });
       });
-    });
-  }
+    }
 
-  async function load(page=1){ render(await fetchList(page)); }
+    async function load(page=1){
+      try {
+        const data = await api.list(page);
+        render(data);
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          window.location.href = '/admin/login';
+        } else {
+          console.error('Contacts load failed:', err);
+        }
+      }
+    }
 
-  q('#filters').addEventListener('submit', e=>{e.preventDefault(); load(1);});
-  load();
-})();
+    q('#filters').addEventListener('submit', e=>{ e.preventDefault(); load(1); });
+    load();
+  })();
 </script>
+
 <?php $content = ob_get_clean(); include __DIR__.'/../../../layouts/admin.php'; ?>
