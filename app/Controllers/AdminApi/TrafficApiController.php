@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\AdminApi;
 
 use App\Services\TrafficService;
 use Psr\Http\Message\ResponseInterface;

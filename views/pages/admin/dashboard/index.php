@@ -52,6 +52,17 @@ ob_start();
           </div>
         </div>
       </div>
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h2 class="h6 mb-0">Latest Messages</h2>
+              <a href="/admin/contacts" class="btn btn-sm btn-outline-secondary">Open</a>
+            </div>
+            <ul id="latestContacts" class="list-unstyled mb-0 small"></ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -120,6 +131,44 @@ ob_start();
       });
     }
 
+    function esc(s){return s==null?'':String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c]));}
+
+    async function loadLatestContacts(limit = 5) {
+      const el = document.getElementById('latestContacts');
+      if (!el) return;
+
+      try {
+        const r = await fetch(`/admin/api/contacts/latest?limit=${encodeURIComponent(limit)}`, {
+          credentials: 'same-origin',
+          headers: { 'Accept': 'application/json' }
+        });
+        if (r.status === 401) {
+          // Segui la stessa logica del resto della dashboard
+          window.location.href = '/admin/login';
+          return;
+        }
+        const data = await r.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          el.innerHTML = '<li class="text-muted">No messages yet.</li>';
+          return;
+        }
+
+        el.innerHTML = data.map(m => `
+          <li class="d-flex justify-content-between border-bottom py-1">
+            <span class="text-truncate" style="max-width:70%">
+              <strong>${esc(m.name)}</strong>
+              — ${esc(m.subject || '(no subject)')}
+            </span>
+            <span class="text-muted">${esc(m.created_at)}</span>
+          </li>
+        `).join('');
+      } catch (e) {
+        // in caso di errore silenzioso non blocchiamo la dashboard
+        console.error('Failed to load latest contacts:', e);
+      }
+    }
+
     async function load(from, to) {
         const [sum, ts] = await Promise.all([api.summary(from, to), api.timeseries(from, to)]);
 
@@ -133,6 +182,9 @@ ob_start();
         const labels = (ts.daily ?? []).map(r => r.d);
         const values = (ts.daily ?? []).map(r => Number(r.hits));
         renderLine(labels, values);
+
+        // Latest contacts
+        loadLatestContacts(5);
     }
 
     // Date range form
@@ -149,4 +201,4 @@ ob_start();
 </script>
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../../layouts/admin.php';
+include __DIR__ . '/../../../layouts/admin.php';

@@ -6,7 +6,7 @@
   // Define nav items once
   $navItems = [
       [ 'href' => '/admin/dashboard', 'icon' => 'bi-grid',     'label' => 'Dashboard', 'active' => $current === '/admin/dashboard' ],
-      [ 'href' => '/admin/traffic',   'icon' => 'bi-activity', 'label' => 'Traffic',   'active' => str_starts_with($current, '/admin/traffic') ],
+      [ 'href' => '/admin/contacts',  'icon' => 'bi-envelope', 'label' => 'Contacts',   'active' => $current === '/admin/contacts' ],
   ];
 ?>
 <!DOCTYPE html>

@@ -4,17 +4,14 @@ namespace App\Controllers;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class AdminDashboardController
+class AdminContactsController
 {
     public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $admin = $request->getAttribute('admin');
-
         ob_start();
-        $pageTitle = 'Dashboard';
-        include __DIR__ . '/../../views/pages/admin/dashboard/index.php';
+        $pageTitle = 'Contacts';
+        include __DIR__ . '/../../views/pages/admin/contacts/index.php';
         $html = ob_get_clean();
-
         $response->getBody()->write($html);
         return $response;
     }

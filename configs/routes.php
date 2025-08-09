@@ -10,14 +10,9 @@ use Slim\App;
  * @return void
  */
 return function (App $app): void {
-    // Rotte web (frontend, pagine pubbliche)
-    if (file_exists(__DIR__ . '/../routes/web.php')) {
-        (require __DIR__ . '/../routes/web.php')($app);
-    }
-
-    // Rotte API (se presenti)
-    if (file_exists(__DIR__ . '/../routes/api.php')) {
-        (require __DIR__ . '/../routes/api.php')($app);
+    // Rotte web (frontend, pagine pubbliche, ecc.)
+    if (file_exists(__DIR__ . '/../routes/public.php')) {
+        (require __DIR__ . '/../routes/public.php')($app);
     }
 
     // Eventuali altre rotte (admin, ecc.)

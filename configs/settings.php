@@ -34,7 +34,23 @@ return function (Container $container) {
             'cookie'   => $_ENV['JWT_COOKIE']   ?? 'admin_token', // cookie name
         ],
 
-        // Opzionale: percorso base app
+        'mail' => [
+            'driver'   => $_ENV['MAIL_DRIVER']   ?? 'smtp',
+            'host'     => $_ENV['MAIL_HOST']     ?? '127.0.0.1',
+            'port'     => $_ENV['MAIL_PORT']     ?? '587',
+            'username' => $_ENV['MAIL_USER']     ?? 'user@example.com',
+            'password' => $_ENV['MAIL_PASS']     ?? '',
+            'encryption' => $_ENV['MAIL_ENCRYPTION'] ?? 'tls',
+            'from'     => [
+                'address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'no-reply@example.com',
+                'name'    => $_ENV['MAIL_FROM_NAME'] ?? 'Portfolio Admin',
+            ],
+            'to' => [
+                'address' => $_ENV['MAIL_TO_ADDRESS'] ?? 'user@example.com',
+                'name'    => $_ENV['MAIL_TO_NAME'] ?? 'User',
+            ],
+        ],
+
         'paths' => [
             'root'      => $rootPath,
             'public'    => $rootPath . '/public',
