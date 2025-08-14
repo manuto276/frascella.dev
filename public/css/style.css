@@ -9,109 +9,121 @@
     --accent-color: #FFE19C;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    letter-spacing: 0.04em;
-}
+/* ---------- TYPOGRAPHY SCALE (Golden Ratio) ---------- */
 
-.headline1 {
+.display-xxl {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 17.942rem;
     line-height: 1.0;
+    letter-spacing: 0.04em;
 }
 
-.headline2 {
+.display-xl {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 11.089rem;
     line-height: 1.0;
+    letter-spacing: 0.04em;
 }
 
-.headline3 {
+.display-lg {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 6.854rem;
     line-height: 1.0;
+    letter-spacing: 0.04em;
 }
 
-.headline4 {
+.title-xl {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 4.236rem;
     line-height: 1.0;
+    letter-spacing: 0.04em;
 }
 
-.headline5 {
+.title-lg {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.618rem;
     line-height: 1.0;
+    letter-spacing: 0.04em;
 }
 
-.headline6 {
+.title-md {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.618rem;
     line-height: 1.0;
+    letter-spacing: 0.04em;
 }
 
-.paragraph {
+.text-base {
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
 }
 
-.small {
+.text-sm {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.707rem;
 }
 
+/* ---------- RESPONSIVE ---------- */
+
+@media (min-width: 1536px) {
+    :root { font-size: 20px; }
+}
+
 @media (max-width: 1024px) {
-    .headline1 {
-        font-size: 11.391rem;
-    }
-
-    .headline2 {
-        font-size: 7.594rem;
-    }
-
-    .headline3 {
-        font-size: 5.063rem;
-    }
-
-    .headline4 {
-        font-size: 3.375rem;
-    }
-
-    .headline5 {
-        font-size: 2.25rem;
-    }
-
-    .headline6 {
-        font-size: 1.5rem;
-    }
-
-    .small {
-        font-size: 0.75rem;
-    }
+    .display-xxl { font-size: 11.391rem; }
+    .display-xl  { font-size: 7.594rem; }
+    .display-lg  { font-size: 5.063rem; }
+    .title-xl    { font-size: 3.375rem; }
+    .title-lg    { font-size: 2.25rem; }
+    .title-md    { font-size: 1.5rem; }
+    .text-sm     { font-size: 0.75rem; }
 }
 
 @media (max-width: 600px) {
-    .headline1 {
-        font-size: 5.61rem;
-    }
-    .headline2 {
-        font-size: 4.209rem;
-    }
-    .headline3 {
-        font-size: 3.157rem;
-    }
-    .headline4 {
-        font-size: 2.369rem;
-    }
-    .headline5 {
-        font-size: 1.777rem;
-    }
-    .headline6 {
-        font-size: 1.333rem;
-    }
-    .small {
-        font-size: 0.707rem;
-    }
+    .display-xxl { font-size: 5.61rem; }
+    .display-xl  { font-size: 4.209rem; }
+    .display-lg  { font-size: 3.157rem; }
+    .title-xl    { font-size: 2.369rem; }
+    .title-lg    { font-size: 1.777rem; }
+    .title-md    { font-size: 1.333rem; }
+    .text-sm     { font-size: 0.707rem; }
 }
+
+/* ---------- INPUT STYLES ---------- */
+
+.custom-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #4b5563; /* gray-600 */
+  padding: 0.75rem 0;
+  color: white;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.custom-input:focus {
+  border-color: white;
+}
+
+.custom-button {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #e5e7eb; /* gray-200 */
+}
+
+/* ---------- ANIMATIONS ---------- */
 
 @keyframes scroll-indicator-pulse {
     0% {

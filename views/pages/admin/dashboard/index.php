@@ -68,7 +68,7 @@ ob_start();
 </div>
 
 <script type="module">
-  import http from '/js/axiosClient.js'; // axios preconfigurato: withCredentials + interceptor 401→refresh→retry
+  import http from '/js/admin/axiosClient.js'; // axios preconfigurato: withCredentials + interceptor 401→refresh→retry
 
   (() => {
     const qs = (s, el = document) => el.querySelector(s);

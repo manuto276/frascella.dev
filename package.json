@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "tailwind:build": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify",
-    "tailwind:watch": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify --watch"
+    "tailwind:watch": "tailwindcss -i ./public/css/input.css -o ./public/css/tailwind.css --minify --watch",
+    "vite:dev": "vite",
+    "vite:build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,8 @@
   "description": "",
   "devDependencies": {
     "esbuild": "^0.25.8",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "vite": "^7.1.1"
   },
   "dependencies": {
     "axios": "^1.11.0"

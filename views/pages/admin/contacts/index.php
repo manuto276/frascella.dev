@@ -28,7 +28,7 @@
 </div>
 
 <script type="module">
-  import http from '/js/axiosClient.js'; // Axios preconfigurato: withCredentials + 401→refresh→retry
+  import http from '/js/admin/axiosClient.js'; // Axios preconfigurato: withCredentials + 401→refresh→retry
 
   (() => {
     const q = s => document.querySelector(s);
